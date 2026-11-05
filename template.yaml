@@ -1,0 +1,392 @@
+Resources:
+  PracticeVpcA37617B9:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: 10.0.0.0/16
+      EnableDnsHostnames: true
+      EnableDnsSupport: true
+      InstanceTenancy: default
+      Tags:
+        - Key: Name
+          Value: AwsCdkPracticeStack/PracticeVpc
+    Metadata:
+      aws:cdk:path: AwsCdkPracticeStack/PracticeVpc/Resource
+  PracticeVpcpublicSubnet1Subnet4D8C4F4D:
+    Type: AWS::EC2::Subnet
+    Properties:
+      AvailabilityZone:
+        Fn::Select:
+          - 0
+          - Fn::GetAZs: ""
+      CidrBlock: 10.0.0.0/24
+      MapPublicIpOnLaunch: true
+      Tags:
+        - Key: aws-cdk:subnet-name
+          Value: public
+        - Key: aws-cdk:subnet-type
+          Value: Public
+        - Key: Name
+          Value: AwsCdkPracticeStack/PracticeVpc/publicSubnet1
+      VpcId:
+        Ref: PracticeVpcA37617B9
+    Metadata:
+      aws:cdk:path: AwsCdkPracticeStack/PracticeVpc/publicSubnet1/Subnet
+  PracticeVpcpublicSubnet1RouteTable6F3F53C3:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      Tags:
+        - Key: Name
+          Value: AwsCdkPracticeStack/PracticeVpc/publicSubnet1
+      VpcId:
+        Ref: PracticeVpcA37617B9
+    Metadata:
+      aws:cdk:path: AwsCdkPracticeStack/PracticeVpc/publicSubnet1/RouteTable
+  PracticeVpcpublicSubnet1RouteTableAssociation32223FDE:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId:
+        Ref: PracticeVpcpublicSubnet1RouteTable6F3F53C3
+      SubnetId:
+        Ref: PracticeVpcpublicSubnet1Subnet4D8C4F4D
+    Metadata:
+      aws:cdk:path: AwsCdkPracticeStack/PracticeVpc/publicSubnet1/RouteTableAssociation
+  PracticeVpcpublicSubnet1DefaultRouteA4C3B4AD:
+    Type: AWS::EC2::Route
+    Properties:
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId:
+        Ref: PracticeVpcIGW63E0D0E2
+      RouteTableId:
+        Ref: PracticeVpcpublicSubnet1RouteTable6F3F53C3
+    DependsOn:
+      - PracticeVpcVPCGW69AAA170
+    Metadata:
+      aws:cdk:path: AwsCdkPracticeStack/PracticeVpc/publicSubnet1/DefaultRoute
+  PracticeVpcpublicSubnet2Subnet1E596D01:
+    Type: AWS::EC2::Subnet
+    Properties:
+      AvailabilityZone:
+        Fn::Select:
+          - 1
+          - Fn::GetAZs: ""
+      CidrBlock: 10.0.1.0/24
+      MapPublicIpOnLaunch: true
+      Tags:
+        - Key: aws-cdk:subnet-name
+          Value: public
+        - Key: aws-cdk:subnet-type
+          Value: Public
+        - Key: Name
+          Value: AwsCdkPracticeStack/PracticeVpc/publicSubnet2
+      VpcId:
+        Ref: PracticeVpcA37617B9
+    Metadata:
+      aws:cdk:path: AwsCdkPracticeStack/PracticeVpc/publicSubnet2/Subnet
+  PracticeVpcpublicSubnet2RouteTable2C086DB5:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      Tags:
+        - Key: Name
+          Value: AwsCdkPracticeStack/PracticeVpc/publicSubnet2
+      VpcId:
+        Ref: PracticeVpcA37617B9
+    Metadata:
+      aws:cdk:path: AwsCdkPracticeStack/PracticeVpc/publicSubnet2/RouteTable
+  PracticeVpcpublicSubnet2RouteTableAssociationC1AF7419:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId:
+        Ref: PracticeVpcpublicSubnet2RouteTable2C086DB5
+      SubnetId:
+        Ref: PracticeVpcpublicSubnet2Subnet1E596D01
+    Metadata:
+      aws:cdk:path: AwsCdkPracticeStack/PracticeVpc/publicSubnet2/RouteTableAssociation
+  PracticeVpcpublicSubnet2DefaultRoute584FA39A:
+    Type: AWS::EC2::Route
+    Properties:
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId:
+        Ref: PracticeVpcIGW63E0D0E2
+      RouteTableId:
+        Ref: PracticeVpcpublicSubnet2RouteTable2C086DB5
+    DependsOn:
+      - PracticeVpcVPCGW69AAA170
+    Metadata:
+      aws:cdk:path: AwsCdkPracticeStack/PracticeVpc/publicSubnet2/DefaultRoute
+  PracticeVpcIGW63E0D0E2:
+    Type: AWS::EC2::InternetGateway
+    Properties:
+      Tags:
+        - Key: Name
+          Value: AwsCdkPracticeStack/PracticeVpc
+    Metadata:
+      aws:cdk:path: AwsCdkPracticeStack/PracticeVpc/IGW
+  PracticeVpcVPCGW69AAA170:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties:
+      InternetGatewayId:
+        Ref: PracticeVpcIGW63E0D0E2
+      VpcId:
+        Ref: PracticeVpcA37617B9
+    Metadata:
+      aws:cdk:path: AwsCdkPracticeStack/PracticeVpc/VPCGW
+  PracticeVpcRestrictDefaultSecurityGroupCustomResource53F6FAC2:
+    Type: Custom::VpcRestrictDefaultSG
+    Properties:
+      ServiceToken:
+        Fn::GetAtt:
+          - CustomVpcRestrictDefaultSGCustomResourceProviderHandlerDC833E5E
+          - Arn
+      DefaultSecurityGroupId:
+        Fn::GetAtt:
+          - PracticeVpcA37617B9
+          - DefaultSecurityGroup
+      Account:
+        Ref: AWS::AccountId
+    UpdateReplacePolicy: Delete
+    DeletionPolicy: Delete
+    Metadata:
+      aws:cdk:path: AwsCdkPracticeStack/PracticeVpc/RestrictDefaultSecurityGroupCustomResource/Default
+  CustomVpcRestrictDefaultSGCustomResourceProviderRole26592FE0:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+      ManagedPolicyArns:
+        - Fn::Sub: arn:${AWS::Partition}:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+      Policies:
+        - PolicyName: Inline
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - ec2:AuthorizeSecurityGroupIngress
+                  - ec2:AuthorizeSecurityGroupEgress
+                  - ec2:RevokeSecurityGroupIngress
+                  - ec2:RevokeSecurityGroupEgress
+                Resource:
+                  - Fn::Join:
+                      - ""
+                      - - "arn:"
+                        - Ref: AWS::Partition
+                        - ":ec2:"
+                        - Ref: AWS::Region
+                        - ":"
+                        - Ref: AWS::AccountId
+                        - :security-group/
+                        - Fn::GetAtt:
+                            - PracticeVpcA37617B9
+                            - DefaultSecurityGroup
+    Metadata:
+      aws:cdk:path: AwsCdkPracticeStack/Custom::VpcRestrictDefaultSGCustomResourceProvider/Role
+  CustomVpcRestrictDefaultSGCustomResourceProviderHandlerDC833E5E:
+    Type: AWS::Lambda::Function
+    Properties:
+      Code:
+        S3Bucket:
+          Fn::Sub: cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}
+        S3Key: 02b51ab524e7bcf8f477de3e71e5f9a72e448301b26ba62e9e75a14f9c55a093.zip
+      Timeout: 900
+      MemorySize: 128
+      Handler: __entrypoint__.handler
+      Role:
+        Fn::GetAtt:
+          - CustomVpcRestrictDefaultSGCustomResourceProviderRole26592FE0
+          - Arn
+      Runtime: nodejs24.x
+      Description: Lambda function for removing all inbound/outbound rules from the VPC default security group
+    DependsOn:
+      - CustomVpcRestrictDefaultSGCustomResourceProviderRole26592FE0
+    Metadata:
+      aws:cdk:path: AwsCdkPracticeStack/Custom::VpcRestrictDefaultSGCustomResourceProvider/Handler
+      aws:asset:path: asset.02b51ab524e7bcf8f477de3e71e5f9a72e448301b26ba62e9e75a14f9c55a093
+      aws:asset:property: Code
+  PracticeEc2InstanceSecurityGroupBEBF7CBD:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: AwsCdkPracticeStack/PracticeEc2/InstanceSecurityGroup
+      SecurityGroupEgress:
+        - CidrIp: 0.0.0.0/0
+          Description: Allow all outbound traffic by default
+          IpProtocol: "-1"
+      Tags:
+        - Key: Name
+          Value: AwsCdkPracticeStack/PracticeEc2
+      VpcId:
+        Ref: PracticeVpcA37617B9
+    Metadata:
+      aws:cdk:path: AwsCdkPracticeStack/PracticeEc2/InstanceSecurityGroup/Resource
+  PracticeEc2InstanceRole69AB26E4:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service: ec2.amazonaws.com
+        Version: "2012-10-17"
+      Tags:
+        - Key: Name
+          Value: AwsCdkPracticeStack/PracticeEc2
+    Metadata:
+      aws:cdk:path: AwsCdkPracticeStack/PracticeEc2/InstanceRole/Resource
+  PracticeEc2InstanceProfileC0BE32C3:
+    Type: AWS::IAM::InstanceProfile
+    Properties:
+      Roles:
+        - Ref: PracticeEc2InstanceRole69AB26E4
+    Metadata:
+      aws:cdk:path: AwsCdkPracticeStack/PracticeEc2/InstanceProfile
+  PracticeEc2D4E8C79F:
+    Type: AWS::EC2::Instance
+    Properties:
+      AvailabilityZone:
+        Fn::Select:
+          - 0
+          - Fn::GetAZs: ""
+      IamInstanceProfile:
+        Ref: PracticeEc2InstanceProfileC0BE32C3
+      ImageId:
+        Ref: SsmParameterValueawsserviceamiamazonlinuxlatestal2023amikernel61x8664C96584B6F00A464EAD1953AFF4B05118Parameter
+      InstanceType: t3.micro
+      SecurityGroupIds:
+        - Fn::GetAtt:
+            - PracticeEc2InstanceSecurityGroupBEBF7CBD
+            - GroupId
+      SubnetId:
+        Ref: PracticeVpcpublicSubnet1Subnet4D8C4F4D
+      Tags:
+        - Key: Name
+          Value: AwsCdkPracticeStack/PracticeEc2
+      UserData:
+        Fn::Base64: "#!/bin/bash"
+    DependsOn:
+      - PracticeEc2InstanceRole69AB26E4
+    Metadata:
+      aws:cdk:path: AwsCdkPracticeStack/PracticeEc2/Resource
+  CDKMetadata:
+    Type: AWS::CDK::Metadata
+    Properties:
+      Analytics: v2:deflate64:H4sIAAAAAAAA/81SXWvbQBD8LbnHcFaLSlPwm6yHIGixsUMeakJZndb2xqc9cR9yXaH/Xs6S4qT0B/hJu3Ozo9ll0iT99jX5fAcnN1PVcaapTLqNB3WUcHK/OlRp0j03atuJGn5nf5yYi3shBYN/BI8nOE+ICyWjzw3vaB8seDIs5ttOMNT4gfJ0biKwCqUmJaRQVNkf4I4XUv/Sv8h8x8+rXA6MzWVo2wlogTSUpMmffxqeRNtGFdVYR6mFNuo49jU0g0jRLPk7BFYHMfc2oBTUtA/5P3RwjvZcNO1DVlUWnVtybnFcJZqTN+LiZozchoshMkNQYrU2weMTlBqv+BXLnDOKLgJv5FgU7NEyTrkeUzh2mfegDjWylwU7D6xw28U1R5c0gmO4hz3VgRiLGvY4ZltuUAVL/vxoTWg+CIDW5pRpvQy+NIGr6SQTHg9wfRvU4nLvBYctBiO9JKiTbm10NArOhRqrxVnMO9FYYkUN6EwpE9hfDx1qjAOZul53+E1E36uvrNmRxr6Xa3QmWIUyD86bemq34l4Mk/9/X1nTUoV2AQ5l5hz6jYc98T7OrMBCjR5tbJbBN8H3kk2Fyav71KZpkn5J0rtXRzSzgT3VmKyH71/ojy6nzwQAAA==
+    Metadata:
+      aws:cdk:path: AwsCdkPracticeStack/CDKMetadata/Default
+    Condition: CDKMetadataAvailable
+Parameters:
+  SsmParameterValueawsserviceamiamazonlinuxlatestal2023amikernel61x8664C96584B6F00A464EAD1953AFF4B05118Parameter:
+    Type: AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>
+    Default: /aws/service/ami-amazon-linux-latest/al2023-ami-kernel-6.1-x86_64
+  BootstrapVersion:
+    Type: AWS::SSM::Parameter::Value<String>
+    Default: /cdk-bootstrap/hnb659fds/version
+    Description: Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]
+Outputs:
+  InstanceId:
+    Value:
+      Ref: PracticeEc2D4E8C79F
+Conditions:
+  CDKMetadataAvailable:
+    Fn::Or:
+      - Fn::Or:
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - af-south-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - ap-east-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - ap-northeast-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - ap-northeast-2
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - ap-northeast-3
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - ap-south-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - ap-south-2
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - ap-southeast-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - ap-southeast-2
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - ap-southeast-3
+      - Fn::Or:
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - ap-southeast-4
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - ca-central-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - ca-west-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - cn-north-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - cn-northwest-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - eu-central-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - eu-central-2
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - eu-north-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - eu-south-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - eu-south-2
+      - Fn::Or:
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - eu-west-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - eu-west-2
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - eu-west-3
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - il-central-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - me-central-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - me-south-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - sa-east-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - us-east-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - us-east-2
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - us-west-1
+      - Fn::Equals:
+          - Ref: AWS::Region
+          - us-west-2
+
