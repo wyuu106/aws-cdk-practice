@@ -32,7 +32,9 @@ export class AwsCdkPracticeStack extends cdk.Stack {
       // 指定しないとprivateサブネットが優先されるので、publicに固定する
       vpcSubnets: { subnetType: ec2.SubnetType.PUBLIC },
       instanceType: new ec2.InstanceType('t3.micro'),
-      machineImage: ec2.MachineImage.latestAmazonLinux2023(),
+      machineImage: ec2.MachineImage.genericLinux({
+        'ap-southeast-2': 'ami-0fe72ee76eb56783b',
+      }),
     });
 
     // Session Managerで接続するための権限
